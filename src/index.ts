@@ -66,7 +66,7 @@ app.get('/check', async (request, reply) => {
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, (err) => {
+app.listen(port, '0.0.0.0', (err) => {
 	if (err) {
 		console.error(err);
 		throw err;
