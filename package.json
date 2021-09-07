@@ -9,6 +9,7 @@
     "dev": "ts-node src/index.ts"
   },
   "dependencies": {
+    "dayjs": "^1.10.6",
     "dotenv": "^10.0.0",
     "fastify": "^3.20.2",
     "fastify-cors": "^6.0.2",
