@@ -34,23 +34,24 @@ async function updateStatus() {
 
 	if (response.body.includes('"isLive":true')) {
 		lastStatus = `User is live at ${liveUrl}`;
+		timestampOffline = undefined;
+	}
+
+	if (timestampOffline === undefined) {
+		timestampOffline = Date.now();
+	}
+
+	const secondsElapsed = (Date.now() - timestampOffline) / 1000;
+	const minutesRemaining = Math.ceil(bufferSeconds - secondsElapsed) / 1000;
+
+	if (minutesRemaining > 0) {
+		lastStatus = `Leon is not live; the gift card will be revealed if he fails to go live in ${Math.ceil(
+			minutesRemaining
+		)} minute${minutesRemaining === 1 ? '' : 's'}.`;
 	} else {
-		if (timestampOffline === undefined) {
-			timestampOffline = Date.now();
-		}
-
-		const secondsElapsed = (Date.now() - timestampOffline) / 1000;
-		const minutesRemaining = Math.ceil(bufferSeconds - secondsElapsed);
-
-		if (minutesRemaining > 0) {
-			lastStatus = `Leon is not live; the gift card will be revealed if he fails to go live in ${Math.ceil(
-				minutesRemaining
-			)} minute${minutesRemaining === 1 ? '' : 's'}.`;
-		} else {
-			lastStatus = `Leon has not been live for ${
-				bufferSeconds / 60
-			} minutes. Gift card code: ${process.env.GIFT_CARD_CODE}`;
-		}
+		lastStatus = `Leon has not been live for ${
+			bufferSeconds / 60
+		} minutes. Gift card code: ${process.env.GIFT_CARD_CODE}`;
 	}
 }
 
