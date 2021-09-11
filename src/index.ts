@@ -21,6 +21,7 @@ app.register(fastifyRateLimit, {
 	timeWindow: '10 seconds',
 });
 const streamingUrl = process.env.STREAMING_URL as string;
+const streamAnchorLink = `<a href='${streamingUrl}'>${streamingUrl}</a>`;
 
 let lastTimestampChecked = 0;
 let lastStatus = '';
@@ -40,7 +41,7 @@ async function updateStatus() {
 	console.log(response.body);
 
 	if (response.body.includes('"isLiveBroadcast":true')) {
-		lastStatus = `User is live at ${streamingUrl}`;
+		lastStatus = `User is live at ${streamAnchorLink}.`;
 		timestampOffline = undefined;
 		return;
 	}
@@ -53,11 +54,11 @@ async function updateStatus() {
 	const minutesRemaining = Math.ceil((bufferSeconds - secondsElapsed) / 60);
 
 	if (minutesRemaining > 0) {
-		lastStatus = `Leon is not live; the gift card will be revealed if he fails to go live in ${minutesRemaining} minute${
+		lastStatus = `Leon is not live at ${streamAnchorLink}; the gift card will be revealed if he fails to go live in ${minutesRemaining} minute${
 			minutesRemaining === 1 ? '' : 's'
 		}.`;
 	} else {
-		lastStatus = `Leon has not been live for ${
+		lastStatus = `Leon has not been live at ${streamAnchorLink} for ${
 			bufferSeconds / 60
 		} minutes. Gift card code: ${process.env.GIFT_CARD_CODE}`;
 	}
@@ -74,7 +75,7 @@ enum Weekday {
 }
 
 function createScheduleMessage() {
-	return `The lion isn't currently obliged to stay in his cage. He's scheduled to be live from 4:30pm to 9:30pm on weekdays, and from 8:30am to 9:30pm on weekends. If you find that he isn't in his cage by then (i.e. not streaming), you'll receive compensation (in the form of a gift card code) for your trouble ;)`;
+	return `The lion isn't currently obliged to stay in his cage at ${streamAnchorLink}. He's scheduled to be live from 4:30pm to 9:30pm on weekdays, and from 8:30am to 9:30pm on weekends. If you find that he isn't in his cage by then (i.e. not streaming), you'll receive compensation (in the form of a gift card code) for your trouble ;)`;
 }
 
 // Limit URL checks to once every minute
