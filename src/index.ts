@@ -85,7 +85,6 @@ app.get('/check', async (request, reply) => {
 	const minute = dayjs().minute();
 	const minutes = hour * 60 + minute;
 
-	/*
 	// Don't check on weekends before 8:30 AM or after 9:30 PM
 	if (weekday === Weekday.saturday || weekday === Weekday.sunday) {
 		if (minutes < 8 * 60 + 30 || minutes > 21 * 60 + 30) {
@@ -98,7 +97,6 @@ app.get('/check', async (request, reply) => {
 			return reply.send(createScheduleMessage());
 		}
 	}
-	*/
 
 	// If a minute has elapsed since the last check, recheck and update the status
 	if (Date.now() - lastTimestampChecked >= 60 * 1000) {
