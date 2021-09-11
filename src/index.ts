@@ -20,8 +20,7 @@ app.register(fastifyRateLimit, {
 	max: 3,
 	timeWindow: '10 seconds',
 });
-
-const liveUrl = `https://www.youtube.com/channel/${process.env.CHANNEL_ID}/live`;
+const streamingUrl = process.env.STREAMING_URL as string;
 
 let lastTimestampChecked = 0;
 let lastStatus = '';
@@ -37,10 +36,10 @@ function createLastStatusMessage() {
 }
 
 async function updateStatus() {
-	const response = await got.get(liveUrl);
+	const response = await got.get(streamingUrl);
 
-	if (response.body.includes('"isLive":true')) {
-		lastStatus = `User is live at ${liveUrl}`;
+	if (response.body.includes('"isLiveBroadcast":true')) {
+		lastStatus = `User is live at ${streamingUrl}`;
 		timestampOffline = undefined;
 	}
 
@@ -73,7 +72,7 @@ enum Weekday {
 }
 
 function createScheduleMessage() {
-	return `The lion isn't currently obliged to stay in his cage. He's scheduled to be live from 4:30pm to 9:30pm on weekdays, and 8:30am to 9:30pm on weekends. If you catch him roaming outside his cage by then, you'll receive compensation (in the form of a gift card code) for your trouble ;) `;
+	return `The lion isn't currently obliged to stay in his cage. He's scheduled to be live from 4:30pm to 9:30pm on weekdays, and from 8:30am to 9:30pm on weekends. If you catch him roaming outside his cage by then, you'll receive compensation (in the form of a gift card code) for your trouble ;) `;
 }
 
 // Limit URL checks to once every minute
