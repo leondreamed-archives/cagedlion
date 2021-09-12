@@ -8,6 +8,8 @@ import fastifyCors from 'fastify-cors';
 import fastifyRateLimit from 'fastify-rate-limit';
 import got from 'got';
 
+const twitchCheckLiveApi = `https://api.twitch.tv/helix/streams?user_login=leonzacagedlion`;
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.tz.setDefault('America/Toronto');
@@ -36,12 +38,24 @@ function createLastStatusMessage() {
 	)} seconds ago)`;
 }
 
+async function getAccessToken() {
+	const response = await got.post(
+		`https://id.twitch.tv/oauth2/token?client_id=${process.env.TWITCH_CLIENT_ID}&client_secret=${process.env.TWITCH_CLIENT_SECRET}&grant_type=client_credentials`
+	);
+
+	return JSON.parse(response.body).access_token;
+}
+
 async function updateStatus() {
-	const response = await got.get(streamingUrl);
+	const accessToken = await getAccessToken();
+	const response = await got.get(twitchCheckLiveApi, {
+		headers: {
+			'Client-Id': process.env.TWITCH_CLIENT_ID,
+			Authorization: `Bearer ${accessToken}`,
+		},
+	});
 
-	console.log(response.body)
-
-	if (response.body.includes('"isLiveBroadcast":true')) {
+	if (JSON.parse(response.body).data?.[0]?.type === 'live') {
 		lastStatus = `User is live at ${streamAnchorLink}.`;
 		timestampOffline = undefined;
 		return;
