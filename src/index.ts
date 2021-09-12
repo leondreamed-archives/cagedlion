@@ -39,6 +39,8 @@ function createLastStatusMessage() {
 async function updateStatus() {
 	const response = await got.get(streamingUrl);
 
+	console.log(response.body)
+
 	if (response.body.includes('"isLiveBroadcast":true')) {
 		lastStatus = `User is live at ${streamAnchorLink}.`;
 		timestampOffline = undefined;
