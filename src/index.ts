@@ -38,7 +38,6 @@ function createLastStatusMessage() {
 
 async function updateStatus() {
 	const response = await got.get(streamingUrl);
-	console.log(response.body);
 
 	if (response.body.includes('"isLiveBroadcast":true')) {
 		lastStatus = `User is live at ${streamAnchorLink}.`;
@@ -81,9 +80,10 @@ function createScheduleMessage() {
 // Limit URL checks to once every minute
 app.get('/check', async (request, reply) => {
 	// On weekends, don't check before 9am or after 9pm
-	const weekday = dayjs().day();
-	const hour = dayjs().hour();
-	const minute = dayjs().minute();
+	const today = dayjs();
+	const weekday = today.tz().day();
+	const hour = today.tz().hour();
+	const minute = today.tz().minute();
 	const minutes = hour * 60 + minute;
 
 	// Don't check on weekends before 8:30 AM or after 9:30 PM
